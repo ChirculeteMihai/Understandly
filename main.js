@@ -14,11 +14,20 @@ document.addEventListener("DOMContentLoaded", () => {
 		sections.forEach((s) => {
 			s.style.display = s.id === id ? "block" : "none";
 		});
+		// Update active nav link
+		const links = document.querySelectorAll(".nav .nav-link");
+		links.forEach(l => l.classList.remove("active"));
+		const target =
+			id.startsWith("cs") ? document.querySelector('.nav .nav-link[href="#cs"]') :
+			id === "subjects" ? document.querySelector('.nav .nav-link[href="#subjects"]') :
+			document.querySelector('.nav .nav-link[href="#home"]');
+		target?.classList.add("active");
 		// Reset scroll to top for nicer navigation
 		try {
 			window.scrollTo(0, 0);
 		} catch {}
 	}
+
 
 	window.addEventListener("hashchange", () => showSection(getCurrentId()));
 	// Default to home if no hash

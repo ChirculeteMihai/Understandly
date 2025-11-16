@@ -4,6 +4,9 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>Understandly</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="styles.css" />
     </head>
     <body>
@@ -46,34 +49,11 @@
                     <h2>Computer Science</h2>
                     <p>Available now: Python Basics — Variables.</p>
                     <ul>
-                        <li><a href="#cs-variables">Lesson: Variables in Python</a></li>
                         <li><a href="#cs-quiz">Quick Quiz (5 questions)</a></li>
                         <li><a href="#cs-project">Mini Project</a></li>
                     </ul>
                 </section>
 
-                <!-- CS Lesson: Variables -->
-                <section id="cs-variables" class="section">
-                    <h2>Variables in Python</h2>
-                    <p>Variables store data so you can use it later.</p>
-                    <div class="code-block">
-<pre><code># Assignment
-name = "Maya"   # string
-age = 19         # integer
-price = 12.99    # float
-is_student = True  # boolean
-
-# Reassignment
-age = age + 1
-
-# Naming rules
-# - start with a letter or _
-# - use letters, numbers, _
-# - case-sensitive: total and Total are different
-</code></pre>
-                    </div>
-                    <p class="muted">Tip: use clear names like total_price, not tp.</p>
-                </section>
 
                 <!-- CS Quiz Placeholder -->
                 <section id="cs-quiz" class="section">
@@ -93,13 +73,6 @@ age = age + 1
                                 <label><input type="radio" name="q2" value="a" /> 2</label>
                                 <label><input type="radio" name="q2" value="b" /> 3</label>
                                 <label><input type="radio" name="q2" value="c" /> 5</label>
-                                <div class="answer" data-answer="c"></div>
-                            </li>
-                            <li class="quiz-item">
-                                <p>3) Best variable name to store number of students?</p>
-                                <label><input type="radio" name="q3" value="a" /> s</label>
-                                <label><input type="radio" name="q3" value="b" /> numberOfStudents</label>
-                                <label><input type="radio" name="q3" value="c" /> students_count</label>
                                 <div class="answer" data-answer="c"></div>
                             </li>
                             <li class="quiz-item">
@@ -129,20 +102,14 @@ age = age + 1
                         <li>Compute <code>total_expenses</code> and <code>remaining = budget - total_expenses</code>.</li>
                         <li>Print a summary like: <code>Remaining budget: $X</code>.</li>
                     </ol>
-                    <details>
-                        <summary>Starter (optional)</summary>
-                        <div class="code-block"><pre><code>budget = 1000
-rent = 550
-food = 180
-transport = 60
-
-total_expenses = rent + food + transport
-remaining = budget - total_expenses
-
-print("Total expenses:", total_expenses)
-print("Remaining budget:", remaining)
-</code></pre></div>
-                    </details>
+                </section>
+                <section id="code" class="section">
+                    <h2>Code</h2>
+                    <script src="main.js"></script>
+                </section>
+                <section id="terminal" class="section">
+                    <h2>Terminal</h2>
+                    <script src="main.js"></script>
                 </section>
             </div>
         </main>
