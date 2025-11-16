@@ -17,7 +17,6 @@
                     <a href="#home" class="nav-link">Home</a>
                     <a href="#subjects" class="nav-link">Subjects</a>
                     <a href="#cs" class="nav-link">CS</a>
-                    <a href="#terminal" class="nav-link">Terminal</a>
                 </nav>
             </div>
         </header>
@@ -103,19 +102,19 @@
                         <li>Compute <code>total_expenses</code> and <code>remaining = budget - total_expenses</code>.</li>
                         <li>Print a summary like: <code>Remaining budget: $X</code>.</li>
                     </ol>
-                </section>
-                <section id="terminal" class="section">
-                    <h2>Remote Code Runner</h2>
-                    <p class="muted">Fetch a page, extract <code>&lt;pre&gt;&lt;code&gt;</code> blocks, run JS, or paste code manually.</p>
-                    <div class="terminal-controls">
-                        <input id="fetch-url" type="url" placeholder="https://example.com/page.html" aria-label="Remote URL" />
-                        <button id="fetch-run" class="btn">Fetch & Run</button>
-                    </div>
-                    <div class="manual-run">
-                        <textarea id="manual-code" rows="6" placeholder="// Paste JS code here"></textarea>
-                        <button id="manual-run" class="btn btn-accent">Run Code</button>
-                    </div>
-                    <div id="terminal-output" class="terminal" aria-live="polite"></div>
+                    <details>
+                        <summary>Try it in your browser (JS)</summary>
+                        <p class="muted">Fetch a page with <code>&lt;pre&gt;&lt;code&gt;</code> blocks or paste JS below and run it. Output appears here.</p>
+                        <div class="terminal-controls">
+                            <input id="fetch-url" type="url" placeholder="https://example.com/page.html" aria-label="Remote URL" />
+                            <button id="fetch-run" class="btn">Fetch & Run</button>
+                        </div>
+                        <div class="manual-run">
+                            <textarea id="manual-code" rows="6" placeholder="// Paste JS code here"></textarea>
+                            <button id="manual-run" class="btn btn-accent">Run Code</button>
+                        </div>
+                        <div id="terminal-output" class="terminal" aria-live="polite"></div>
+                    </details>
                 </section>
             </div>
         </main>
