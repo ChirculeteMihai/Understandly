@@ -9,7 +9,10 @@ document.addEventListener("DOMContentLoaded", () => {
     
 	function getCurrentId() {
 		const raw = (location.hash || "#home").slice(1);
-		return raw || "home";
+		if (!raw) return "home";
+		// Basic sanity limit to avoid pathological hashes
+		if (raw.length > 64) return "home";
+		return raw;
 	}
 
 	function showSection(id) {
@@ -28,20 +31,8 @@ document.addEventListener("DOMContentLoaded", () => {
 		// Reset scroll to top for nicer navigation
 		try {
 			window.scrollTo(0, 0);
-		} catch {
+		} catch (e) {}
 	}
-
-    function clearanswers(form) {
-        const items = Array.from(form.querySelectorAll(".quiz-item"));
-        items.forEach((item) => {
-            item.classList.remove("correct", "incorrect");
-            const radios = item.querySelectorAll('input[type="radio"]');
-            radios.forEach((radio) => {
-                radio.checked = false;
-            });
-        });
-        resultEl.textContent = "";
-    }
 	window.addEventListener("hashchange", () => showSection(getCurrentId()));
 	// Default to home if no hash
 	if (!location.hash) location.hash = "#home";
@@ -88,7 +79,6 @@ document.addEventListener("DOMContentLoaded", () => {
 			});
 
 			resultEl.textContent = `You scored ${correct}/${total}.`;
-            clearanswers(quizForm);
 			try {
 				localStorage.setItem(
 					"quiz:cs:variables",
@@ -122,7 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
 					if (done) return;
 					done = true;
 					try { worker.terminate(); } catch {}
-					resolve({ out: "", err: "", exc: "Timed out" });
+					resolve({ out: "", err: "", exc: `Timed out after ${timeoutMs} ms` });
 				}, timeoutMs);
 				worker.onmessage = (e) => {
 					if (done) return;
@@ -142,7 +132,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			if (!code.trim()) return;
 			manualRunBtn.disabled = true;
 			append(["Running..."], "muted");
-			const { out, err, exc } = await runInWorker(code, { timeoutMs: 3000 });
+			const { out, err, exc } = await runInWorker(code, { timeoutMs: 5000 });
 			termOutput.innerHTML = "";
 			if (out) append(out.split(/\n/).filter(Boolean), "out");
 			if (err) append(err.split(/\n/).filter(Boolean), "error");
@@ -151,5 +141,4 @@ document.addEventListener("DOMContentLoaded", () => {
 			manualRunBtn.disabled = false;
 		});
 	}
-}
 });
