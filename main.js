@@ -84,44 +84,12 @@ document.addEventListener("DOMContentLoaded", () => {
 		});
 	}
 
-	// Remote code runner (Python via Pyodide) in project section
+	// Remote code runner (Python via Web Worker) on project section
 	const termOutput = document.getElementById("terminal-output");
 	const manualRunBtn = document.getElementById("manual-run");
 	const manualTextarea = document.getElementById("manual-code");
 
 	if (termOutput && manualRunBtn && manualTextarea) {
-		let pyodidePromise = null;
-		function loadScript(src) {
-			return new Promise((resolve, reject) => {
-				const s = document.createElement("script");
-				s.src = src;
-				s.onload = resolve;
-				s.onerror = () => reject(new Error("Failed to load " + src));
-				document.head.appendChild(s);
-			});
-		}
-
-		async function ensurePyodide() {
-			if (!window.loadPyodide) {
-				await loadScript("https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js");
-			}
-			if (!pyodidePromise) {
-				pyodidePromise = window.loadPyodide({ indexURL: "https://cdn.jsdelivr.net/pyodide/v0.24.1/full/" });
-			}
-			return pyodidePromise;
-		}
-
-		async function runPythonSafely(code) {
-			const pyodide = await ensurePyodide();
-			const py = `import sys, io, json\n_stdout, _stderr = sys.stdout, sys.stderr\n_outbuf, _errbuf = io.StringIO(), io.StringIO()\nsys.stdout, sys.stderr = _outbuf, _errbuf\n_exc = None\ntry:\n    exec(compile(${JSON.stringify(code)}, '<user>', 'exec'), {})\nexcept Exception as e:\n    _exc = str(e)\nfinally:\n    sys.stdout, sys.stderr = _stdout, _stderr\nres = {"out": _outbuf.getvalue(), "err": _errbuf.getvalue(), "exc": _exc}\njson.dumps(res)`;
-			try {
-				const jsonStr = pyodide.runPython(py);
-				return JSON.parse(jsonStr);
-			} catch (e) {
-				return { out: "", err: "", exc: String(e && e.message ? e.message : e) };
-			}
-		}
-
 		function append(lines, cls) {
 			lines.forEach(line => {
 				const div = document.createElement("div");
@@ -131,15 +99,42 @@ document.addEventListener("DOMContentLoaded", () => {
 			});
 		}
 
+		function runInWorker(code, { timeoutMs = 4000 } = {}) {
+			return new Promise((resolve) => {
+				const worker = new Worker("py-worker.js");
+				const id = Math.random().toString(36).slice(2);
+				let done = false;
+				const timer = setTimeout(() => {
+					if (done) return;
+					done = true;
+					try { worker.terminate(); } catch {}
+					resolve({ out: "", err: "", exc: "Timed out" });
+				}, timeoutMs);
+				worker.onmessage = (e) => {
+					if (done) return;
+					done = true;
+					clearTimeout(timer);
+					try { worker.terminate(); } catch {}
+					const { out = "", err = "", exc = "" } = e.data || {};
+					resolve({ out, err, exc });
+				};
+				worker.postMessage({ id, code });
+			});
+		}
+
 		manualRunBtn.addEventListener("click", async () => {
 			termOutput.innerHTML = "";
 			const code = manualTextarea.value;
 			if (!code.trim()) return;
-			const { out, err, exc } = await runPythonSafely(code);
+			manualRunBtn.disabled = true;
+			append(["Running..."], "muted");
+			const { out, err, exc } = await runInWorker(code, { timeoutMs: 5000 });
+			termOutput.innerHTML = "";
 			if (out) append(out.split(/\n/).filter(Boolean), "out");
 			if (err) append(err.split(/\n/).filter(Boolean), "error");
 			if (exc) append(["Error: " + exc], "error");
 			if (!out && !err && !exc) append(["[no output]"], "muted");
+			manualRunBtn.disabled = false;
 		});
 	}
 });
