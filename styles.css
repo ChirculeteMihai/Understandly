@@ -118,3 +118,17 @@ a:hover { color: var(--accent); }
 	.section { padding: 44px 0; }
 	.container { padding: 0 16px; }
 }
+
+/* Terminal styles */
+.terminal-controls { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 12px; }
+#fetch-url { flex: 1 1 280px; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border); background: #10192f; color: var(--text); }
+#fetch-url:focus { outline: 2px solid var(--accent); }
+.manual-run { margin: 0 0 14px; display: flex; flex-direction: column; gap: 8px; }
+#manual-code { width: 100%; resize: vertical; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border); font-family: ui-monospace, monospace; background: #10192f; color: var(--text); }
+#manual-code:focus { outline: 2px solid var(--accent); }
+.terminal { background:#111b2e; color:#e6e9ef; font:14px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; padding:12px 14px; border-radius:12px; max-height:360px; overflow:auto; border:1px solid var(--border); box-shadow:0 0 0 1px #182538, 0 0 14px #000 inset; }
+.terminal .error { color:#ff5f56; }
+.terminal .warn { color:#ffaa2b; }
+.terminal .out { color:#6ad76a; }
+.terminal .muted { color:#5d6a80; font-style:italic; }
+.terminal .sep { color:#4da3ff; }

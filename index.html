@@ -17,6 +17,7 @@
                     <a href="#home" class="nav-link">Home</a>
                     <a href="#subjects" class="nav-link">Subjects</a>
                     <a href="#cs" class="nav-link">CS</a>
+                    <a href="#terminal" class="nav-link">Terminal</a>
                 </nav>
             </div>
         </header>
@@ -76,16 +77,16 @@
                                 <div class="answer" data-answer="c"></div>
                             </li>
                             <li class="quiz-item">
-                                <p>4) Which type is <code>True</code>?</p>
-                                <label><input type="radio" name="q4" value="a" /> int</label>
-                                <label><input type="radio" name="q4" value="b" /> str</label>
-                                <label><input type="radio" name="q4" value="c" /> bool</label>
+                                <p>3) Which type is <code>True</code>?</p>
+                                <label><input type="radio" name="q3" value="a" /> int</label>
+                                <label><input type="radio" name="q3" value="b" /> str</label>
+                                <label><input type="radio" name="q3" value="c" /> bool</label>
                                 <div class="answer" data-answer="c"></div>
                             </li>
                             <li class="quiz-item">
-                                <p>5) Is <code>Total</code> the same as <code>total</code>?</p>
-                                <label><input type="radio" name="q5" value="a" /> Yes</label>
-                                <label><input type="radio" name="q5" value="b" /> No</label>
+                                <p>4) Is <code>Total</code> the same as <code>total</code>?</p>
+                                <label><input type="radio" name="q4" value="a" /> Yes</label>
+                                <label><input type="radio" name="q4" value="b" /> No</label>
                                 <div class="answer" data-answer="b"></div>
                             </li>
                         </ol>
@@ -103,13 +104,18 @@
                         <li>Print a summary like: <code>Remaining budget: $X</code>.</li>
                     </ol>
                 </section>
-                <section id="code" class="section">
-                    <h2>Code</h2>
-                    <script src="main.js"></script>
-                </section>
                 <section id="terminal" class="section">
-                    <h2>Terminal</h2>
-                    <script src="main.js"></script>
+                    <h2>Remote Code Runner</h2>
+                    <p class="muted">Fetch a page, extract <code>&lt;pre&gt;&lt;code&gt;</code> blocks, run JS, or paste code manually.</p>
+                    <div class="terminal-controls">
+                        <input id="fetch-url" type="url" placeholder="https://example.com/page.html" aria-label="Remote URL" />
+                        <button id="fetch-run" class="btn">Fetch & Run</button>
+                    </div>
+                    <div class="manual-run">
+                        <textarea id="manual-code" rows="6" placeholder="// Paste JS code here"></textarea>
+                        <button id="manual-run" class="btn btn-accent">Run Code</button>
+                    </div>
+                    <div id="terminal-output" class="terminal" aria-live="polite"></div>
                 </section>
             </div>
         </main>

@@ -83,4 +83,69 @@ document.addEventListener("DOMContentLoaded", () => {
 			} catch {}
 		});
 	}
+
+	// Remote code runner (JS) in terminal section
+	const termOutput = document.getElementById("terminal-output");
+	const fetchBtn = document.getElementById("fetch-run");
+	const urlInput = document.getElementById("fetch-url");
+	const manualRunBtn = document.getElementById("manual-run");
+	const manualTextarea = document.getElementById("manual-code");
+
+	if (termOutput && fetchBtn && urlInput && manualRunBtn && manualTextarea) {
+		const iframe = document.createElement("iframe");
+		iframe.style.display = "none";
+		iframe.setAttribute("sandbox", "allow-scripts");
+		iframe.srcdoc = "<!doctype html><html><head></head><body></body></html>";
+		document.body.appendChild(iframe);
+
+		function evalInSandbox(code) {
+			const win = iframe.contentWindow;
+			const captured = [];
+			const originalLog = win.console.log;
+			win.console.log = (...args) => captured.push(args.join(" "));
+			try { win.eval(code); } catch (e) { captured.push("Error: " + e.message); }
+			win.console.log = originalLog;
+			return captured;
+		}
+
+		function append(lines, cls) {
+			lines.forEach(line => {
+				const div = document.createElement("div");
+				if (cls) div.className = cls;
+				div.textContent = line;
+				termOutput.appendChild(div);
+			});
+		}
+
+		fetchBtn.addEventListener("click", async () => {
+			termOutput.innerHTML = "";
+			const url = urlInput.value.trim();
+			if (!url) return;
+			append(["Fetching " + url + "..."], "muted");
+			try {
+				const res = await fetch(url);
+				if (!res.ok) throw new Error(res.status + " " + res.statusText);
+				const html = await res.text();
+				const doc = new DOMParser().parseFromString(html, "text/html");
+				const blocks = [...doc.querySelectorAll("pre code")].map(el => el.textContent.trim()).filter(Boolean);
+				if (!blocks.length) { append(["No code blocks found"], "warn"); return; }
+				blocks.forEach((code, i) => {
+					append(["--- Block " + (i + 1) + " ---"], "sep");
+					const out = evalInSandbox(code);
+					append(out.length ? out : ["[no output]"], "out");
+				});
+			} catch (e) {
+				append(["Fetch failed: " + e.message], "error");
+				append(["If CORS blocks, paste code below and use Run"], "muted");
+			}
+		});
+
+		manualRunBtn.addEventListener("click", () => {
+			termOutput.innerHTML = "";
+			const code = manualTextarea.value;
+			if (!code.trim()) return;
+			const out = evalInSandbox(code);
+			append(out.length ? out : ["[no output]"], "out");
+		});
+	}
 });
