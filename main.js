@@ -86,12 +86,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	// Remote code runner (Python via Pyodide) in project section
 	const termOutput = document.getElementById("terminal-output");
-	const fetchBtn = document.getElementById("fetch-run");
-	const urlInput = document.getElementById("fetch-url");
 	const manualRunBtn = document.getElementById("manual-run");
 	const manualTextarea = document.getElementById("manual-code");
 
-	if (termOutput && fetchBtn && urlInput && manualRunBtn && manualTextarea) {
+	if (termOutput && manualRunBtn && manualTextarea) {
 		let pyodidePromise = null;
 		function loadScript(src) {
 			return new Promise((resolve, reject) => {
@@ -132,33 +130,6 @@ document.addEventListener("DOMContentLoaded", () => {
 				termOutput.appendChild(div);
 			});
 		}
-
-		fetchBtn.addEventListener("click", async () => {
-			termOutput.innerHTML = "";
-			const url = urlInput.value.trim();
-			if (!url) return;
-			append(["Fetching " + url + "..."], "muted");
-			try {
-				const res = await fetch(url);
-				if (!res.ok) throw new Error(res.status + " " + res.statusText);
-				const html = await res.text();
-				const doc = new DOMParser().parseFromString(html, "text/html");
-				const blocks = [...doc.querySelectorAll("pre code")].map(el => el.textContent.trim()).filter(Boolean);
-				if (!blocks.length) { append(["No code blocks found"], "warn"); return; }
-				blocks.forEach((code, i) => {
-					append(["--- Block " + (i + 1) + " ---"], "sep");
-					runPythonSafely(code).then(({ out, err, exc }) => {
-						if (out) append(out.split(/\n/).filter(Boolean), "out");
-						if (err) append(err.split(/\n/).filter(Boolean), "error");
-						if (exc) append(["Error: " + exc], "error");
-						if (!out && !err && !exc) append(["[no output]"], "muted");
-					});
-				});
-			} catch (e) {
-				append(["Fetch failed: " + e.message], "error");
-				append(["If CORS blocks, paste Python below and use Run"], "muted");
-			}
-		});
 
 		manualRunBtn.addEventListener("click", async () => {
 			termOutput.innerHTML = "";
