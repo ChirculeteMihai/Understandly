@@ -1,5 +1,8 @@
 // Understandly minimal app logic: hash routing + quiz scoring
 document.addEventListener("DOMContentLoaded", () => {
+	// Safety: ensure external target=_blank links cannot control opener
+	Array.from(document.querySelectorAll('a[target="_blank"]'))
+		.forEach(a => a.setAttribute('rel', 'noopener noreferrer'));
 	// Simple hash-based section router
 	const sections = Array.from(document.querySelectorAll("main .view section"));
 	const sectionById = new Map(sections.map((s) => [s.id, s]));
@@ -128,7 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			if (!code.trim()) return;
 			manualRunBtn.disabled = true;
 			append(["Running..."], "muted");
-			const { out, err, exc } = await runInWorker(code, { timeoutMs: 5000 });
+			const { out, err, exc } = await runInWorker(code, { timeoutMs: 3000 });
 			termOutput.innerHTML = "";
 			if (out) append(out.split(/\n/).filter(Boolean), "out");
 			if (err) append(err.split(/\n/).filter(Boolean), "error");
