@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	// Simple hash-based section router
 	const sections = Array.from(document.querySelectorAll("main .view section"));
 	const sectionById = new Map(sections.map((s) => [s.id, s]));
-
+    
 	function getCurrentId() {
 		const raw = (location.hash || "#home").slice(1);
 		return raw || "home";
@@ -28,10 +28,20 @@ document.addEventListener("DOMContentLoaded", () => {
 		// Reset scroll to top for nicer navigation
 		try {
 			window.scrollTo(0, 0);
-		} catch {}
+		} catch {
 	}
 
-
+    function clearanswers(form) {
+        const items = Array.from(form.querySelectorAll(".quiz-item"));
+        items.forEach((item) => {
+            item.classList.remove("correct", "incorrect");
+            const radios = item.querySelectorAll('input[type="radio"]');
+            radios.forEach((radio) => {
+                radio.checked = false;
+            });
+        });
+        resultEl.textContent = "";
+    }
 	window.addEventListener("hashchange", () => showSection(getCurrentId()));
 	// Default to home if no hash
 	if (!location.hash) location.hash = "#home";
@@ -78,6 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			});
 
 			resultEl.textContent = `You scored ${correct}/${total}.`;
+            clearanswers(quizForm);
 			try {
 				localStorage.setItem(
 					"quiz:cs:variables",
@@ -140,4 +151,5 @@ document.addEventListener("DOMContentLoaded", () => {
 			manualRunBtn.disabled = false;
 		});
 	}
+}
 });
