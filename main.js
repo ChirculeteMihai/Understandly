@@ -42,6 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	const quizForm = document.getElementById("quiz-form");
 	if (quizForm) {
 		const checkBtn = quizForm.querySelector('button[type="button"]');
+		const clearBtn = document.getElementById("quiz-clear");
 		if (checkBtn) {
 			checkBtn.disabled = false;
 			checkBtn.title = "";
@@ -85,6 +86,16 @@ document.addEventListener("DOMContentLoaded", () => {
 					JSON.stringify({ correct, total, time: Date.now() })
 				);
 			} catch {}
+		});
+
+		clearBtn?.addEventListener("click", () => {
+			const items = Array.from(quizForm.querySelectorAll(".quiz-item"));
+			items.forEach(item => {
+				item.classList.remove("correct", "incorrect");
+				item.querySelectorAll('input[type="radio"]').forEach(r => { r.checked = false; });
+			});
+			resultEl.textContent = "";
+			try { localStorage.removeItem("quiz:cs:variables"); } catch {}
 		});
 	}
 
